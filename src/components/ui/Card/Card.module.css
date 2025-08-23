@@ -181,7 +181,12 @@
   gap: 6px;
   color: #fff;
 }
-
+.amenities{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+}
 .priceValue {
   font-weight: 800;
   font-size: clamp(1.2rem, 3vw, 1.5rem);

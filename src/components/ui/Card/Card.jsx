@@ -31,7 +31,8 @@ const ArrowRight = (props) => (
 );
 
 const Card = ({ hotel, onBook, onToggleFavorite }) => {
-  const { name, image, rating, location, price, badge, isFavorite } = hotel;
+  const { name, image, rating, location, price, badge, isFavorite,amenities } = hotel;
+  console.log('amentirs',amenities)
 
   return (
     <div className={styles.card}>
@@ -64,12 +65,19 @@ const Card = ({ hotel, onBook, onToggleFavorite }) => {
             <span>{rating?.toFixed ? rating.toFixed(1) : rating}</span>
           </div>
         </div>
+        <div className={styles.amenities}>
+           {
+            amenities.map((amenity) => (
+              <p>{amenity.icon}</p>
+            )
+          )}
+        </div>
 
         <p className={styles.location}>
           <LocationPin />
           <span title={location}>{location}</span>
         </p>
-
+       
         <div className={styles.footer}>
           <div className={styles.price}>
             <span className={styles.priceValue}>${price}</span>
