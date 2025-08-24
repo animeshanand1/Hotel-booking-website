@@ -1,7 +1,7 @@
 
-import styles from "./Testimonials.module.css";
+import styles from "./Newsletter.module.css";
 
-const Testimonials = () => {
+const Newsletter = () => {
   return (
     <section className={styles.newsletter} aria-labelledby="newsletter-title">
       <div className={styles["newsletter-container"]}>
@@ -140,4 +140,4 @@ const Testimonials = () => {
   );
 };
 
-export default Testimonials;
+export default Newsletter;
