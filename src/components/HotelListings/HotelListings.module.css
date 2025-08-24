@@ -2,15 +2,33 @@
   padding: 40px 20px;
 }
 
-.title {
-  text-align: center;
-  font-size: 2.5rem;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 40px;
+}
+
+.title {
+  font-size: 2.5rem;
+}
+
+.controls button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  justify-items: center;
+  transition: transform 0.3s ease-in-out;
 }

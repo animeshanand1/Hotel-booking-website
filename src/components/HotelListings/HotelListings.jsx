@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Card from '../ui/Card/Card';
 import styles from './HotelListings.module.css';
 
@@ -44,28 +44,61 @@ const hotels = [
     ],
   },
   {
-    name: "City Center Inn",
-    image:"https://images.unsplash.com/photo-1549294413-26f195200c16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
-    rating: 4.2,
-    location: "Bandra West, Mumbai",
-    price: 3000,
+    name: "Beachside Resort",
+    image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+    rating: 4.7,
+    location: "Goa, India",
+    price: 5000,
     amenities: [
       { icon: "📶", label: "Unlimited Wifi" },
-      { icon: "🍴", label: "Lunch Included" },
+      { icon: "🍴", label: "Breakfast Included" },
+      { icon: "❄️", label: "AC Rooms" },
+      { icon: "🏊‍♂️", label: "Swimming Pool" },
+    ],
+  },
+  {
+    name: "Luxury Palace",
+    image:"https://images.unsplash.com/photo-1582719508461-905c673771fd?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
+    rating: 4.9,
+    location: "Udaipur, Rajasthan",
+    price: 10000,
+    amenities: [
+      { icon: "📶", label: "Unlimited Wifi" },
+      { icon: "🍴", label: "All Meals Included" },
       { icon: "❄️", label: "AC Rooms" },
       { icon: "🏊‍♂️", label: "Swimming Pool" },
       { icon: "🏋️", label: "Gym" },
+      { icon: "💆‍♀️", label: "Spa" },
     ],
   },
 ];
 
-
 const HotelListings = () => {
+  const [startIndex, setStartIndex] = useState(0);
+
+  const nextHotels = () => {
+    if (startIndex < hotels.length - 4) {
+      setStartIndex(startIndex + 1);
+    }
+  };
+
+  const prevHotels = () => {
+    if (startIndex > 0) {
+      setStartIndex(startIndex - 1);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Featured Hotels</h2>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Featured Hotels</h2>
+        <div className={styles.controls}>
+          <button onClick={prevHotels} disabled={startIndex === 0}>&lt;</button>
+          <button onClick={nextHotels} disabled={startIndex >= hotels.length - 4}>&gt;</button>
+        </div>
+      </div>
       <div className={styles.grid}>
-        {hotels.map((hotel) => (
+        {hotels.slice(startIndex, startIndex + 4).map((hotel) => (
           <Card key={hotel.name} hotel={hotel} />
         ))}
       </div>
