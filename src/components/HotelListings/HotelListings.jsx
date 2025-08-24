@@ -93,8 +93,8 @@ const HotelListings = () => {
       <div className={styles.header}>
         <h2 className={styles.title}>Featured Hotels</h2>
         <div className={styles.controls}>
-          <button onClick={prevHotels} disabled={startIndex === 0}>&lt;</button>
-          <button onClick={nextHotels} disabled={startIndex >= hotels.length - 4}>&gt;</button>
+          <button onClick={prevHotels} disabled={startIndex === 0}>←</button>
+          <button onClick={nextHotels} disabled={startIndex >= hotels.length - 4}>→</button>
         </div>
       </div>
       <div className={styles.grid}>
