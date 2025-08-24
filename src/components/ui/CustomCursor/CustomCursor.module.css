@@ -1,0 +1,30 @@
+
+.cursor, .follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.cursor {
+    width: 8px;
+    height: 8px;
+    background-color: #C08497; 
+    transition: transform 0.1s ease-out;
+}
+
+.follower {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #C08497; 
+    transition: transform 0.3s ease-out, background-color 0.3s, border-color 0.3s;
+}
+
+.follower.hover {
+    transform: translate(-50%, -50%) scale(2.5);
+    background-color: rgba(192, 132, 151, 0.2);
+    border-color: transparent;
+}
