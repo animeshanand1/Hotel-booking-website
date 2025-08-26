@@ -1,0 +1,125 @@
+.testimonials {
+    padding: 2rem;
+    background-color: #f8f9fa;
+  }
+  
+  .testimonialsContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .testimonials-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .t-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .eyebrow {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+  }
+  
+  .t-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .stars {
+    display: flex;
+    color: #ffc107;
+  }
+  
+  .score {
+    font-weight: bold;
+  }
+  
+  .count {
+    color: #6c757d;
+  }
+  
+  .t-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .t-card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .t-quote {
+    font-size: 2rem;
+    color: #e9ecef;
+    line-height: 1;
+  }
+  
+  .t-rating {
+    margin-bottom: 1rem;
+  }
+  
+  .t-text {
+    font-style: italic;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+  
+  .t-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .person {
+    line-height: 1.2;
+  }
+  
+  .person strong {
+    display: block;
+  }
+  
+  .verified {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    color: #28a745;
+    margin-left: auto;
+  }
+  
+  .chips {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .chip {
+    background-color: #e9ecef;
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+  }
