@@ -27,7 +27,7 @@ const Header = () => {
           <div className={styles["logo-badge"]} aria-hidden="true">
             🏨
           </div>
-          <div>LuxeStay</div>
+          <div>StayEase</div>
         </div>
         <nav aria-label="Primary">
           <ul>
