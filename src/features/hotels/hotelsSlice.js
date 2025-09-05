@@ -42,7 +42,7 @@ const hotelsSlice = createSlice({
             state.status = 'loading'
         })
             .addCase(fetchHotelsThunk.fulfilled, (state, action) => {
-                state.status = 'loading'
+                state.status = 'succeeded'
                 state.hotels = action.payload
 
             })
