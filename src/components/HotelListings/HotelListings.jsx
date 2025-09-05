@@ -4,6 +4,7 @@ import styles from './HotelListings.module.css';
 
 const hotels = [
   {
+    id: 1,
     name: "Hotel Sunshine",
     image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
     rating: 4.5,
@@ -16,6 +17,7 @@ const hotels = [
     ],
   },
   {
+    id: 2,
     name: "Mountain Retreat",
     image:"https://images.unsplash.com/photo-1549294413-26f195200c16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
     rating: 4.8,
@@ -30,6 +32,7 @@ const hotels = [
     ],
   },
   {
+    id: 3,
     name: "City Center Inn",
     image:"https://images.unsplash.com/photo-1549294413-26f195200c16?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
     rating: 4.2,
@@ -44,6 +47,7 @@ const hotels = [
     ],
   },
   {
+    id: 4,
     name: "Beachside Resort",
     image:"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
     rating: 4.7,
@@ -57,6 +61,7 @@ const hotels = [
     ],
   },
   {
+    id: 5,
     name: "Luxury Palace",
     image:"https://images.unsplash.com/photo-1582719508461-905c673771fd?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0",
     rating: 4.9,

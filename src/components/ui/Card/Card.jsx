@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Card.module.css';
 
 const Star = (props) => (
@@ -83,14 +84,10 @@ const Card = ({ hotel, onBook, onToggleFavorite }) => {
             <span className={styles.priceValue}>${price}</span>
             <span className={styles.per}>/night</span>
           </div>
-          <button
-            type="button"
-            className={styles.cta}
-            onClick={() => onBook?.(hotel)}
-          >
+          <Link to={`/hotel/${hotel.id}`} className={styles.cta}>
             <span>Book now</span>
             <ArrowRight />
-          </button>
+          </Link>
         </div>
       </div>
     </div>
