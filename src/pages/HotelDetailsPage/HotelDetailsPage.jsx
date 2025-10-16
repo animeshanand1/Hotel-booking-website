@@ -1,9 +1,220 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import ReviewForm from "../../components/Reviews/ReviewForm";
 import styles from "./HotelDetailsPage.module.css";
+
+const CURRENT_CUSTOMER = {
+  id: "customer-001",
+  name: "Jordan Lee",
+  country: "United States",
+  avatar:
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=80&q=80",
+};
+
+const DEFAULT_REVIEWS = [
+  {
+    id: "review-amelia",
+    rating: 10,
+    comment:
+      "Gorgeous views and the infinity pool is unreal. Got a late checkout at no extra cost—staff were lovely.",
+    createdAt: "2024-04-12T09:15:00.000Z",
+    user: {
+      id: "guest-amelia",
+      name: "Amelia",
+      country: "United Kingdom",
+      avatar:
+        "https://images.unsplash.com/photo-1544006659-f0b21884ce1d?q=80&w=80&auto=format&fit=crop",
+    },
+  },
+  {
+    id: "review-jamal",
+    rating: 9,
+    comment:
+      "Price alerts saved me money and check‑in was instant. Balcony view worth every penny.",
+    createdAt: "2024-03-27T16:40:00.000Z",
+    user: {
+      id: "guest-jamal",
+      name: "Jamal",
+      country: "UAE",
+      avatar:
+        "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=80&auto=format&fit=crop",
+    },
+  },
+  {
+    id: "review-luisa",
+    rating: 9.5,
+    comment:
+      "Support fixed a booking date in minutes. Rooms exactly as shown. Great breakfast selection.",
+    createdAt: "2024-02-18T12:05:00.000Z",
+    user: {
+      id: "guest-luisa",
+      name: "Luisa",
+      country: "Spain",
+      avatar:
+        "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=80&auto=format&fit=crop",
+    },
+  },
+];
+
+const STORAGE_KEY = "stayEase:hotelReviews";
+
+const cloneDefaultReviews = () =>
+  DEFAULT_REVIEWS.map((review) => ({
+    ...review,
+    user: { ...review.user },
+  }));
+
+const readStoredReviews = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const getStoredReviews = (hotelId) => {
+  if (!hotelId) {
+    return null;
+  }
+
+  const data = readStoredReviews();
+  if (data && Array.isArray(data[hotelId])) {
+    return data[hotelId];
+  }
+
+  return null;
+};
+
+const persistReviews = (hotelId, reviews) => {
+  if (typeof window === "undefined" || !hotelId) {
+    return;
+  }
+
+  try {
+    const current = readStoredReviews() ?? {};
+    current[hotelId] = reviews;
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  } catch {
+    // ignore storage errors
+  }
+};
+
+const formatReviewDate = (isoString) => {
+  if (!isoString) {
+    return "";
+  }
+
+  const parsed = new Date(isoString);
+  if (Number.isNaN(parsed.getTime())) {
+    return "";
+  }
+
+  return parsed.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const formatScore = (value) => {
+  const numeric = Number(value);
+  if (Number.isNaN(numeric)) {
+    return value;
+  }
+
+  return Number.isInteger(numeric)
+    ? `${numeric}/10`
+    : `${numeric.toFixed(1).replace(/\.0$/, "")}/10`;
+};
 
 const HotelDetailsPage = () => {
   const { hotelId } = useParams();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [reviews, setReviews] = useState(() => {
+    const stored = hotelId ? getStoredReviews(hotelId) : null;
+    return stored?.length ? stored : cloneDefaultReviews();
+  });
+
+  useEffect(() => {
+    if (!hotelId) {
+      return;
+    }
+
+    const stored = getStoredReviews(hotelId);
+    setReviews(stored?.length ? stored : cloneDefaultReviews());
+    setIsFormOpen(false);
+  }, [hotelId]);
+
+  useEffect(() => {
+    if (!hotelId) {
+      return;
+    }
+
+    persistReviews(hotelId, reviews);
+  }, [hotelId, reviews]);
+
+  const sortedReviews = useMemo(
+    () =>
+      [...reviews].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ),
+    [reviews],
+  );
+
+  const myReview = useMemo(
+    () => sortedReviews.find((review) => review.user.id === CURRENT_CUSTOMER.id),
+    [sortedReviews],
+  );
+
+  const toggleForm = () => {
+    setIsFormOpen((previous) => !previous);
+  };
+
+  const openForm = () => {
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+  };
+
+  const handleSubmitReview = (payload) => {
+    setReviews((previous) => {
+      const remaining = previous.filter(
+        (review) => review.user.id !== CURRENT_CUSTOMER.id,
+      );
+
+      const existing = previous.find(
+        (review) => review.user.id === CURRENT_CUSTOMER.id,
+      );
+
+      const comment =
+        typeof payload.comment === "string" ? payload.comment.trim() : "";
+      const numericRating = Number(payload.rating);
+      const rating = Number.isFinite(numericRating)
+        ? Math.min(10, Math.max(1, numericRating))
+        : 10;
+
+      const nextReview = {
+        id: existing?.id ?? `review-${CURRENT_CUSTOMER.id}`,
+        rating,
+        comment,
+        createdAt: new Date().toISOString(),
+        user: { ...CURRENT_CUSTOMER },
+      };
+
+      return [nextReview, ...remaining];
+    });
+
+    closeForm();
+  };
+
   return (
     <section
       className={styles["hotel-details"]}
@@ -528,67 +739,103 @@ const HotelDetailsPage = () => {
                 </div>
               </div>
 
-              <div className={styles["reviews-grid"]}>
-                <article className={styles.rev}>
-                  <div className={styles["rev-top"]}>
-                    <div className={styles.avatar}>
-                      <img
-                        src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?q=80&w=80&auto=format&fit=crop"
-                        alt=""
-                      />
-                    </div>
-                    <div className={styles.who}>
-                      <strong>Amelia</strong>
-                      <span>United Kingdom</span>
-                    </div>
-                    <span className={styles.badge}>10/10</span>
-                  </div>
+              <div className={styles.reviewCta}>
+                <div>
+                  <h3>
+                    {myReview
+                      ? "Thanks for sharing your stay"
+                      : "Share your experience"}
+                  </h3>
                   <p>
-                    Gorgeous views and the infinity pool is unreal. Got a late
-                    checkout at no extra cost—staff were lovely.
+                    {myReview ? (
+                      <>
+                        You can update your review at any time. Last updated{" "}
+                        {formatReviewDate(myReview.createdAt)}.
+                      </>
+                    ) : (
+                      "Tell fellow travellers what made this stay memorable."
+                    )}
                   </p>
-                </article>
-
-                <article className={styles.rev}>
-                  <div className={styles["rev-top"]}>
-                    <div className={styles.avatar}>
-                      <img
-                        src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=80&auto=format&fit=crop"
-                        alt=""
-                      />
-                    </div>
-                    <div className={styles.who}>
-                      <strong>Jamal</strong>
-                      <span>UAE</span>
-                    </div>
-                    <span className={styles.badge}>9/10</span>
-                  </div>
-                  <p>
-                    Price alerts saved me money and check‑in was instant.
-                    Balcony view worth every penny.
-                  </p>
-                </article>
-
-                <article className={styles.rev}>
-                  <div className={styles["rev-top"]}>
-                    <div className={styles.avatar}>
-                      <img
-                        src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=80&auto=format&fit=crop"
-                        alt=""
-                      />
-                    </div>
-                    <div className={styles.who}>
-                      <strong>Luisa</strong>
-                      <span>Spain</span>
-                    </div>
-                    <span className={styles.badge}>9.5/10</span>
-                  </div>
-                  <p>
-                    Support fixed a booking date in minutes. Rooms exactly as
-                    shown. Great breakfast selection.
-                  </p>
-                </article>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={toggleForm}
+                >
+                  {isFormOpen
+                    ? "Close form"
+                    : myReview
+                    ? "Edit your review"
+                    : "Write a review"}
+                </button>
               </div>
+
+              {isFormOpen ? (
+                <ReviewForm
+                  key={myReview?.id ?? "new-review"}
+                  initialValue={myReview}
+                  onSubmit={handleSubmitReview}
+                  onCancel={closeForm}
+                  isEditing={Boolean(myReview)}
+                />
+              ) : null}
+
+              {sortedReviews.length === 0 ? (
+                <div className={styles["no-reviews"]}>
+                  No reviews yet. Be the first to share your experience.
+                </div>
+              ) : (
+                <div className={styles["reviews-grid"]}>
+                  {sortedReviews.map((review) => {
+                    const reviewer = review.user ?? {};
+                    const avatarSrc =
+                      reviewer.avatar ||
+                      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+                    const reviewerName = reviewer.name ?? "Guest";
+                    const isCurrentUser = reviewer.id === CURRENT_CUSTOMER.id;
+
+                    return (
+                      <article key={review.id} className={styles.rev}>
+                        <div className={styles["rev-top"]}>
+                          <div className={styles.avatar}>
+                            <img
+                              src={avatarSrc}
+                              alt={`${reviewerName}'s avatar`}
+                            />
+                          </div>
+                          <div className={styles.who}>
+                            <div className={styles.nameRow}>
+                              <strong>{isCurrentUser ? "You" : reviewerName}</strong>
+                              {isCurrentUser ? (
+                                <span className={styles.youPill}>Your review</span>
+                              ) : null}
+                            </div>
+                            {reviewer.country ? <span>{reviewer.country}</span> : null}
+                            <span className={styles.reviewDate}>
+                              {formatReviewDate(review.createdAt)}
+                            </span>
+                          </div>
+                          <div className={styles["review-badge-wrapper"]}>
+                            <span className={styles.badge}>
+                              {formatScore(review.rating)}
+                            </span>
+                            {isCurrentUser ? (
+                              <button
+                                type="button"
+                                className={styles.editButton}
+                                onClick={openForm}
+                              >
+                                Edit
+                              </button>
+                            ) : null}
+                          </div>
+                        </div>
+                        {review.comment ? <p>{review.comment}</p> : null}
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
             </section>
 
             <section
