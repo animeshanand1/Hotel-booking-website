@@ -1,9 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./HotelDetailsPage.module.css";
+import { getHotelByIdThunk } from "../../features/hotels/hotelsSlice";
+import { checkAvailability } from "../../services/hotelService";
 
 const HotelDetailsPage = () => {
   const { hotelId } = useParams();
+  const dispatch = useDispatch();
+  const { selectedHotel, status, error } = useSelector((state) => state.hotels);
+  const [availabilityForm, setAvailabilityForm] = useState({
+    roomType: '',
+    checkInDate: '',
+  });
+  const [availabilityStatus, setAvailabilityStatus] = useState({
+    checking: false,
+    result: null,
+    error: null
+  });
+
+  const handleAvailabilityCheck = async (e) => {
+    e.preventDefault();
+    setAvailabilityStatus({ checking: true, result: null, error: null });
+    
+    try {
+      const result = await checkAvailability({
+        hotelId,
+        roomType: availabilityForm.roomType,
+        dateOfCheckin: availabilityForm.checkInDate
+      });
+      setAvailabilityStatus({ checking: false, result, error: null });
+    } catch (error) {
+      setAvailabilityStatus({
+        checking: false,
+        result: null,
+        error: error.message
+      });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setAvailabilityForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  useEffect(() => {
+    if (hotelId) {
+      dispatch(getHotelByIdThunk(hotelId));
+    }
+  }, [hotelId, dispatch]);
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!selectedHotel) {
+    return <div>Hotel not found</div>;
+  }
+
   return (
     <section
       className={styles["hotel-details"]}
@@ -15,7 +76,7 @@ const HotelDetailsPage = () => {
           <i className="fa fa-angle-right" aria-hidden="true"></i>
           <a href="#">Hotels</a>
           <i className="fa fa-angle-right" aria-hidden="true"></i>
-          <span aria-current="page">Azure Bay Resort</span>
+          <span aria-current="page">{selectedHotel.name}</span>
         </nav>
 
         <div className={styles.hero}>
@@ -100,7 +161,7 @@ const HotelDetailsPage = () => {
 
         <header className={styles["hotel-header"]}>
           <div className={styles["title-side"]}>
-            <h2>Azure Bay Resort</h2>
+            <h2>{selectedHotel.name}</h2>
             <div className={styles.meta}>
               <span>
                 <i className="fa-solid fa-star" aria-hidden="true"></i> 4.8
@@ -755,7 +816,7 @@ const HotelDetailsPage = () => {
                 </label>
                 <button
                   className={`${styles.btn} ${styles.primary}`}
-                  type="submit"
+                  type="submit" onClick={handleAvailabilityCheck}
                 >
                   Check availability
                 </button>
@@ -824,7 +885,7 @@ const HotelDetailsPage = () => {
           <strong>$189</strong>
           <span>/day</span>
         </div>
-        <button className={`${styles.btn} ${styles.primary}`}>
+        <button className={`${styles.btn} ${styles.primary}`} onClick={handleAvailabilityCheck}>
           Check availability
         </button>
       </div>

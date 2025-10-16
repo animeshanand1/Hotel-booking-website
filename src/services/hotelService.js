@@ -16,7 +16,7 @@ export const fetchHotels = async (params = {}) => {
     }
 }
 
-export const getHotelById=async(id)=>{
+export const getHotelById = async(id) => {
     try {
         const response = await axios.get(`${baseUrl}/hotels/${id}`);
         return response.data;
@@ -27,6 +27,21 @@ export const getHotelById=async(id)=>{
             throw new Error('Network error: ' + error.message);
         } else {
             throw new Error('Unknown error occurred while fetching hotel details.');
+        }
+    }
+}
+
+export const checkAvailability = async(data) => {
+    try {
+        const response = await axios.post(`${baseUrl}/hotels/availability`, data);
+        return response.data;
+    } catch (error) {
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        } else if (error.message) {
+            throw new Error('Network error: ' + error.message);
+        } else {
+            throw new Error('Unknown error occurred while checking availability.');
         }
     }
 }

@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchHotels } from "../../services/hotelService";
+import { fetchHotels, getHotelById } from "../../services/hotelService";
 
 const initialState = {
     hotels: [],
+    selectedHotel: null,
     status: 'idle',
     error: null,
     filters: {
@@ -21,7 +22,18 @@ export const fetchHotelsThunk = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.message)
         }
+    }
+)
 
+export const getHotelByIdThunk = createAsyncThunk(
+    'hotels/getHotelById',
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await getHotelById(id);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message)
+        }
     }
 )
 
@@ -48,6 +60,19 @@ const hotelsSlice = createSlice({
             })
             .addCase(fetchHotelsThunk.rejected, (state, action) => {
                 state.status = 'failed'
+                state.error = action.payload
+            })
+            .addCase(getHotelByIdThunk.pending, (state) => {
+                state.status = 'loading'
+            })
+            .addCase(getHotelByIdThunk.fulfilled, (state, action) => {
+                state.status = 'succeeded'
+                state.selectedHotel = action.payload
+            })
+            .addCase(getHotelByIdThunk.rejected, (state, action) => {
+                state.status = 'failed'
+                state.error = action.payload
+                state.selectedHotel = null
                 state.error = action.error.message
             })
     }

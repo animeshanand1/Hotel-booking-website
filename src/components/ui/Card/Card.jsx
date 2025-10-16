@@ -32,7 +32,7 @@ const ArrowRight = (props) => (
 );
 
 const Card = ({ hotel, onBook, onToggleFavorite }) => {
-  const { name, image, rating, location, price, badge, isFavorite,amenities } = hotel;
+  const { _id, name, image, rating, location, price, badge, isFavorite, amenities } = hotel;
   console.log('amentirs',amenities)
 
   return (
@@ -84,7 +84,7 @@ const Card = ({ hotel, onBook, onToggleFavorite }) => {
             <span className={styles.priceValue}>${price}</span>
             <span className={styles.per}>/night</span>
           </div>
-          <Link to={`/hotel/${hotel.id}`} className={styles.cta}>
+          <Link to={`/hotel/${_id}`} className={styles.cta}>
             <span>Book now</span>
             <ArrowRight />
           </Link>
