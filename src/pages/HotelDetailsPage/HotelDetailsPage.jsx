@@ -9,6 +9,7 @@ const HotelDetailsPage = () => {
   const { hotelId } = useParams();
   const dispatch = useDispatch();
   const { selectedHotel, status, error } = useSelector((state) => state.hotels);
+  console.log('selectedHotel',selectedHotel)
   const [availabilityForm, setAvailabilityForm] = useState({
     roomType: '',
     checkInDate: '',
@@ -18,6 +19,7 @@ const HotelDetailsPage = () => {
     result: null,
     error: null
   });
+  
 
   const handleAvailabilityCheck = async (e) => {
     e.preventDefault();
@@ -217,121 +219,14 @@ const HotelDetailsPage = () => {
             >
               <h2 id="amenities-title">Amenities</h2>
               <div className={styles["amenities-grid"]}>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <i className="fa-solid fa-briefcase" aria-hidden="true"></i>
-                  </span>
-                  King beds
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M3 12h18M6 5h12M8 19h8"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                  Free Wi‑Fi
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M4 6h16M6 6v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                    </svg>
-                  </span>
-                  In‑room safe
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M4 12a8 8 0 0 1 16 0v3H4v-3Z"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                      <path
-                        d="M6 18h12"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                  Air conditioning
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M4 4h16v10a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4Z"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                      <path
-                        d="M9 9h6M8 13h8"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                  Breakfast included
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M4 12c2-3.333 6-5 12-5a2 2 0 0 1 2 2v8H4v-5Z"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                    </svg>
-                  </span>
-                  Infinity pool
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 2l3 7h7l-5.6 4.1 2.1 6.9L12 16l-6.5 4 2.1-6.9L2 9h7l3-7Z"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                    </svg>
-                  </span>
-                  Spa & sauna
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M2 12h20M6 12v7a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-7"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                    </svg>
-                  </span>
-                  Gym
-                </div>
-                <div className={styles.amenity}>
-                  <span className={styles.ico}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M5 12l2-7h10l2 7M5 12v7h14v-7"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                      />
-                    </svg>
-                  </span>
-                  Restaurant & bar
-                </div>
+                {selectedHotel.amenities.map((amenity, index) => (
+                  <div key={index} className={styles.amenity}>
+                    <span className={styles.ico}>
+                      <i className="fa-solid fa-check" aria-hidden="true"></i>
+                    </span>
+                    {amenity}
+                  </div>
+                ))}
               </div>
             </section>
 
